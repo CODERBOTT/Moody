@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smile Jiya</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #fff;
+    }
+    section {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 700px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .hug-animation {
+      text-align: center;
+      font-size: 2em;
+      animation: hug 1s infinite alternate;
+    }
+    @keyframes hug {
+      from { transform: scale(1); }
+      to { transform: scale(1.05); }
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      background-color: #ff80ab;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    img {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+    canvas {
+      display: block;
+      margin: 0 auto;
+      background: #e0f7fa;
+      border-radius: 15px;
+    }
+    iframe {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Smile Jiya 💖</h1>
+
+  <section>
+    <h2>🌈 Reasons You're Amazing</h2>
+    <ul id="compliments"></ul>
+  </section>
+
+  <section>
+    <h2>🎵 Music Just for You</h2>
+    <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1EIXeF94M4f5Qm?utm_source=generator" height="152" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+  </section>
+
+  <section>
+    <h2>🐱 Emergency Cat Button</h2>
+    <button onclick="showCat()">Cheer Me Up!</button>
+    <div id="catPic"></div>
+  </section>
+
+  <section>
+    <h2>✉️ Messages From Me to You</h2>
+    <p id="personalMsg"></p>
+  </section>
+
+  <section>
+    <h2>🎙️ My Voice for You</h2>
+    <audio controls>
+      <source src="voice-note.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </section>
+
+  <section>
+    <h2>💖 Tap Here for a Hug</h2>
+    <div class="hug-animation">🤗🤗🤗</div>
+  </section>
+
+  <section>
+    <h2>🏓 Emoji Pong Game</h2>
+    <canvas id="pongCanvas" width="400" height="300"></canvas>
+  </section>
+
+  <section>
+    <h2>🫧 Mood Bubble Pop Game</h2>
+    <canvas id="bubbleGame" width="300" height="400"></canvas>
+    <p style="text-align:center;">Score: <span id="score">0</span></p>
+  </section>
+  <audio controls>
+  <source src="voice-note.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<script>
+  // Compliment animation setup
+  const compliments = [
+    "You're kind beyond measure.",
+    "Your smile is my favorite thing.",
+    "You light up every room you enter.",
+    "You're stronger than you think.",
+    "You make my world better just by being in it.",
+    "Don't spoil ur mood coz of some randi got it love?"
+  ];
+
+  let ul = document.getElementById("compliments");
+  let i = 0;
+  setInterval(() => {
+    if (i < compliments.length) {
+      let li = document.createElement("li");
+      li.textContent = compliments[i++];
+      ul.appendChild(li);
+    }
+  }, 2000);
+
+  // Personal messages
+  const messages = [
+    "Remember our late-night talks? I live for those.",
+    "Your laugh is my favorite song.",
+    "Even when you're sad, you're beautiful to me.",
+    "You're my favorite hello and hardest goodbye.",
+    "You're the love of my life."
+  ];
+
+  let msgIndex = 0;
+  function showNextMessage() {
+    const box = document.getElementById("personalMsg");
+    box.textContent = messages[msgIndex];
+    msgIndex = (msgIndex + 1) % messages.length;
+  }
+  setInterval(showNextMessage, 3000);
+  showNextMessage();
+
+  // Cat API button
+  function showCat() {
+    fetch("https://api.thecatapi.com/v1/images/search")
+      .then(res => res.json())
+      .then(data => {
+        const img = document.createElement("img");
+        img.src = data[0].url;
+        const catPic = document.getElementById("catPic");
+        catPic.innerHTML = "";
+        catPic.appendChild(img);
+      });
+  }
+
+  // Bubble Pop Game
+  const bubbleCanvas = document.getElementById('bubbleGame');
+  const bubbleCtx = bubbleCanvas.getContext('2d');
+  let bubbles = [], score = 0;
+
+  function createBubble() {
+    return {
+      x: Math.random() * bubbleCanvas.width,
+      y: bubbleCanvas.height + 20,
+      radius: 20 + Math.random() * 10,
+      speed: 1 + Math.random() * 2,
+      color: `hsl(${Math.random() * 360}, 70%, 70%)`
+    };
+  }
+
+  function drawBubble(b) {
+    bubbleCtx.beginPath();
+    bubbleCtx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+    bubbleCtx.fillStyle = b.color;
+    bubbleCtx.fill();
+  }
+
+  function animateBubbles() {
+    bubbleCtx.clearRect(0, 0, bubbleCanvas.width, bubbleCanvas.height);
+    bubbles.forEach(b => {
+      b.y -= b.speed;
+      drawBubble(b);
+    });
+    bubbles = bubbles.filter(b => b.y + b.radius > 0);
+    requestAnimationFrame(animateBubbles);
+  }
+
+  bubbleCanvas.addEventListener('click', (e) => {
+    const rect = bubbleCanvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    bubbles = bubbles.filter(b => {
+      const dx = b.x - mx;
+      const dy = b.y - my;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance < b.radius) {
+        score++;
+        document.getElementById('score').textContent = score;
+        return false;
+      }
+      return true;
+    });
+  });
+
+  setInterval(() => {
+    if (bubbles.length < 10) bubbles.push(createBubble());
+  }, 500);
+  animateBubbles();
+
+  // Emoji Pong Game
+  const pongCanvas = document.getElementById('pongCanvas');
+  const pongCtx = pongCanvas.getContext('2d');
+  let ballX = 200, ballY = 150, ballDX = 2, ballDY = 2;
+  let paddleX = 150, paddleWidth = 100, paddleHeight = 10;
+
+  function drawPong() {
+    pongCtx.clearRect(0, 0, pongCanvas.width, pongCanvas.height);
+    pongCtx.fillText("🏓", ballX, ballY);
+    pongCtx.fillRect(paddleX, pongCanvas.height - 20, paddleWidth, paddleHeight);
+    ballX += ballDX;
+    ballY += ballDY;
+
+    if (ballX < 0 || ballX > pongCanvas.width) ballDX = -ballDX;
+    if (ballY < 0) ballDY = -ballDY;
+
+    if (
+      ballY + 10 > pongCanvas.height - 20 &&
+      ballX > paddleX &&
+      ballX < paddleX + paddleWidth
+    ) ballDY = -ballDY;
+
+    if (ballY > pongCanvas.height) {
+      ballX = 200; ballY = 150;
+      ballDX = 2; ballDY = 2;
+    }
+
+    requestAnimationFrame(drawPong);
+  }
+
+  document.addEventListener("mousemove", e => {
+    const rect = pongCanvas.getBoundingClientRect();
+    paddleX = e.clientX - rect.left - paddleWidth / 2;
+  });
+
+  drawPong();
+
+  // 🎵 Background music control
+  const bgMusic = new Audio("bg-music.mp3");
+  bgMusic.loop = true;
+  bgMusic.volume = 0.5;
+
+  const voiceNote = document.querySelector("audio");
+
+  // Try to autoplay music on load
+  window.addEventListener("DOMContentLoaded", () => {
+    bgMusic.play().catch(err => {
+      console.warn("Auto-play blocked. User must interact with the page first.");
+      // Optional fallback: alert("Click somewhere to start music");
+    });
+  });
+
+  voiceNote.addEventListener("play", () => {
+    if (!bgMusic.paused) bgMusic.pause();
+  });
+
+  voiceNote.addEventListener("ended", () => {
+    bgMusic.play().catch(() => {}); // Resume background music (optional)
+  });
+</script>
